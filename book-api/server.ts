@@ -1,10 +1,11 @@
-//import express from 'express';
-//import mongoose from 'mongoose';
-//import bodyParser from 'body-parser';
-//import mongoose, { Schema, Document } from 'mongoose';
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+import express from 'express';
+import bodyParser from 'body-parser';
+import mongoose, { Schema, Document } from 'mongoose';
+//const express = require('express');
+//const mongoose = require('mongoose');
+//const Schema = require('Schema');
+//const Document = require('Document');
+//const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
