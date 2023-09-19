@@ -1,22 +1,24 @@
-//import express from 'express';
-//import bodyParser from 'body-parser';
-//import mongoose, { Schema, Document } from 'mongoose';
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { Schema, Document } = mongoose;
 const app = express();
 const PORT = process.env.PORT || 4000;
+
 app.use(bodyParser.json());
-// Connect to MongoDB
+
+// Connect to MongoDB w/ Mongoose (to go along with Node.js)
 mongoose.connect("mongodb+srv://bl45:Benrock123$@book-api.m8jj90v.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('MongoDB connection error:', error));
-// Define book schema and model here
+
+
+//Starting the server!
 app.listen(PORT, () => {
-    //console.log(`Server is running on port ${PORT}`);
     console.log(`Server is listening on http://localhost:${PORT}`);
 });
+
+//Defining book schema and model
 const bookSchema = new Schema({
     title: String,
     author: String,
@@ -24,23 +26,30 @@ const bookSchema = new Schema({
 });
 
 const BookModel = mongoose.model('Book', bookSchema);
-// Add your endpoints below -----------------------------------------------
 
-// Create a new book
+// My End Points!
+// POST: Post/Create a new book
 app.post('/api/books', async (req, res) => {
     try {
+        console.log(req.body);
+        // Validate that the request body contains the required fields
+        if (!req.body.title || !req.body.author || !req.body.genre) {
+            return res.status(400).json({ error: 'Title, author, and genre are required fields.' });
+        }
+
         const newBook = await BookModel.create(req.body);
-        res.status(201).json(newBook);
+        res.status(201).json(newBook); // Return the created book document
     }
     catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-// Get all books
+// GET: get all books
 app.get('/api/books', async (req, res) => {
     try {
-        const books = await BookModel.find();
+        const books = await BookModel.find().select('title author genre'); // Specify the fields you want to retrieve
+        console.log(books);
         res.status(200).json(books);
     }
     catch (error) {
@@ -48,7 +57,7 @@ app.get('/api/books', async (req, res) => {
     }
 });
 
-// Delete a book by ID
+// DELETE: Delete a book by ID
 app.delete('/api/books/:id', async (req, res) => {
     try {
         const deletedBook = await BookModel.findByIdAndRemove(req.params.id);
@@ -64,8 +73,8 @@ app.delete('/api/books/:id', async (req, res) => {
     }
 
 });
-// Define your creative POST endpoint here
-// Update a book's title by ID
+
+// UPDATE: update a book's title by ID
 app.post('/api/books/:id/update-title', async (req, res) => {
     try {
         const { id } = req.params;
