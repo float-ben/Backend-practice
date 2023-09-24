@@ -16,5 +16,8 @@ database
 • creative POST endpoint that, given an input, performs some operation on the
 input and writes the result to the database
 
+Used Postman as a mock frontend
+
+
 
 
